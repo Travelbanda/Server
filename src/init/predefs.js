@@ -1,63 +1,23 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
-
-import { VERSION } from 'core/const/db';
 
 const
 	$C = require('collection.js'),
-	mongoose = require('mongoose'),
-	path = require('path'),
-	glob = require('glob');
+	mongoose = require('mongoose');
 
 /**
  * Initializes default enums
+ * @param enums - map of enums for initialization
  */
-export async function main() {
-	const
-		Counter = mongoose.model('Counter'),
-		dbVersion = (await Counter.findOne({key: 'dbVersion'}) || {}).i || 0;
-
-	if (dbVersion !== VERSION) {
-		const
-			i = (src) => parseInt(path.basename(src)),
-			files = glob.sync(path.join(__dirname, './patches/*.js')).sort((a, b) => i(a) - i(b));
-
-		await $C(files).async.forEach(async (file) => {
-			const
-				pos = i(file);
-
-			if (!isNaN(pos) && pos > dbVersion) {
-				console.log(`Applying the DB patch #${pos}...`);
-				await require(file)();
-				await Counter.update({key: 'dbVersion'}, {$inc: {i: 1}}, {unsafe: true, upsert: true});
-				console.log(`DB successfully updated to version #${pos}!`);
-			}
-		});
-	}
-
-	await $C({
-		LangEnum: [
-			{name: 'ru'},
-			{name: 'en'},
-			{name: 'es'},
-			{name: 'it'},
-			{name: 'fr'},
-			{name: 'de'},
-			{name: 'zh'}
-		],
-
-		PermissionEnum: [
-			{name: 'AdminAccess'}
-		]
-
-	}).async.forEach((fields, model, data, o) => {
+export default async function (enums: ?Object) {
+	await $C({...enums}).async.forEach((fields, model, data, o) => {
 		o.wait(async () => {
 			const
 				Model = mongoose.model(model);
@@ -71,6 +31,4 @@ export async function main() {
 			});
 		});
 	});
-
-	await require('./predefs.roles')();
 }

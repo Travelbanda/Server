@@ -14,11 +14,11 @@ const
 
 /**
  * Initializes enums
- * @param [models] - map of additional models for initialization
+ * @param enums - map of enums for initialization
  */
-export async function main(models?: Object) {
+export default async function initialize(enums: ?Object) {
 	if (this.isNotInitialized('predefs')) {
-		return this.wait('predefs').then(() => main.call(this, ...arguments));
+		return this.wait('predefs').then(() => initialize.call(this, ...arguments));
 	}
 
 	function reduce(map, el) {
@@ -26,7 +26,7 @@ export async function main(models?: Object) {
 		return map;
 	}
 
-	await $C({...models}).async.forEach((init, model, data, o) => {
+	await $C({...enums}).async.forEach((init, model, data, o) => {
 		o.wait(async () => {
 			init($C(await mongoose.model(model).find({})).reduce(reduce, {}));
 		});
