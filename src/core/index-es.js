@@ -8,4 +8,5 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-export const VERSION = 0;
+import 'core/snakeskin';
+import '@v4fire/core/src/index';
