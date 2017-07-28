@@ -28,6 +28,11 @@ const config = module.exports = $C.extend(true, {}, defConfig, {
 	}
 });
 
+config.src = [].concat(
+	defConfig.src,
+	path.join(__dirname, '../src')
+);
+
 config.babel = $C.extend(
 	{
 		deep: true,
