@@ -17,7 +17,7 @@ const
 	path = require('path');
 
 const
-	initialized = Symbol();
+	initialized = Symbol('initialized');
 
 /**
  * Creates a module initializer

@@ -8,5 +8,4 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import 'core/snakeskin';
 import '@v4fire/core/src/index';
