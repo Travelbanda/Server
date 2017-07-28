@@ -21,11 +21,18 @@ const
  * @param [roleModel]
  * @param [permissionModel]
  */
-export default async function ({roleModel = 'Role', permissionModel = 'PermissionEnum'} = {}): {
+export default async function (
+	{roleModel = 'Role', permissionModel = 'PermissionEnum'}: {
+		roleModel?: string,
+		permissionModel?: string
+	} = {}
+
+): {
 	roles: Object,
 	permissions: Object,
 	create(): Promise
 } {
+
 	const
 		Role = mongoose.model(roleModel);
 
