@@ -1,11 +1,11 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
 import { Role } from 'core/acl';
@@ -17,11 +17,12 @@ const
 
 /**
  * Initializes system roles
+ * @param [roleModel]
  */
-module.exports = async function () {
+export default async function (roleModel: string = 'Role') {
 	const
 		event = new EventEmitter({maxListeners: 100}),
-		roles = await mongoose.model('Role').find({});
+		roles = await mongoose.model(roleModel).find({});
 
 	const
 		map = {},
