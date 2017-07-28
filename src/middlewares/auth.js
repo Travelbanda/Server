@@ -26,30 +26,11 @@ export default function auth(model: string, permissions: Array<Object | string> 
 
 		try {
 			const
-				res = await mongoose.model(model).authorize(h['authorization'], h['x-xsrf-token'], permissions);
+				session = await mongoose.model(model).authorize(h['authorization'], h['x-xsrf-token'], permissions);
 
-			ctx.user = res.user;
-			ctx.permissionGroup = res.permissionGroup;
-
-			let
-				hotel = h['x-hotel'];
-
-			if (hotel && ctx.user.hasPermissions('AdminAccess')) {
-				hotel = (await mongoose.model('Hotel').findOne({nameId: hotel.toLowerCase()}))._id;
-				ctx.user = Object.create(ctx.user);
-
-				Object.assign(ctx.user, {
-					hotel,
-					roles: [...ctx.user.roles, role.hotelManager]
-				});
-
-				ctx.reqData = {
-					...ctx.reqData,
-					hotel
-				};
-			}
-
-			res.xsrf && ctx.set('x-xsrf-token', res.xsrf);
+			ctx.user = session.user;
+			ctx.permissionGroup = session.permissionGroup;
+			session.xsrf && ctx.set('x-xsrf-token', session.xsrf);
 
 		} catch (err) {
 			if (err.data && err.data.xsrf) {
