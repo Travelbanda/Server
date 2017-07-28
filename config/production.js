@@ -11,9 +11,5 @@
 module.exports = {
 	sentry: {
 		url: process.env.SENTRY_URL
-	},
-
-	externals: {
-		'raven-js': 'Raven'
 	}
 };

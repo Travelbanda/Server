@@ -1,105 +1,22 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-const {env} = process;
-require('dotenv').config();
+const
+	$C = require('collection.js'),
+	path = require('path'),
+	defConfig = require('@v4fire/core/config/default');
 
 const
-	path = require('path');
+	{env} = process;
 
-function getENVs(s = (s) => s) {
-	return {
-		env: s(env.NODE_ENV),
-		service: s(env.SERVICE_NAME),
-		host: {
-			guest: s(env.GUEST_HOST),
-			api: s(env.API_HOST),
-			admin: s(env.ADMIN_HOST)
-		}
-	};
-}
-
-module.exports = {
-	snakeskin: {
-		base: {
-			pack: false,
-			vars: getENVs(),
-			filters: {global: ['undef']},
-			adapterOptions: {transpiler: true}
-		},
-
-		server: {
-
-		}
-	},
-
-	babel: {
-		base: {
-			plugins: [
-				'syntax-flow',
-				'transform-flow-strip-types',
-				'transform-decorators-legacy',
-				'transform-class-properties',
-				'transform-es2015-object-super',
-				'transform-function-bind',
-				['transform-es2015-modules-commonjs', {loose: true}],
-				['transform-object-rest-spread', {useBuiltIns: true}],
-				['transform-runtime', {
-					helpers: true,
-					polyfill: false,
-					regenerator: false
-				}]
-			],
-
-			compact: false
-		},
-
-		server: {
-			resolveModuleSource(source, from) {
-				if (path.isAbsolute(source) || /^(\.|babel-runtime)/.test(source)) {
-					return source;
-				}
-
-				const p = path.posix;
-				return p.relative(p.dirname(from.replace(/.*?src\//, '')), p.join('./server', source));
-			},
-
-			plugins: [
-				'transform-strict-mode'
-			]
-		},
-
-		client: {
-			plugins: [
-				'transform-exponentiation-operator',
-				'check-es2015-constants',
-				'transform-es2015-destructuring',
-				'transform-remove-strict-mode',
-				'transform-es2015-arrow-functions',
-				'transform-es2015-block-scoping',
-				'transform-es2015-computed-properties',
-				['transform-es2015-classes', {loose: true}],
-				['transform-es2015-for-of', {loose: true}],
-				'transform-es2015-function-name',
-				'transform-es2015-literals',
-				'transform-es2015-parameters',
-				'transform-es2015-shorthand-properties',
-				['transform-es2015-template-literals', {loose: true}],
-				'transform-es2015-spread',
-				'transform-regenerator'
-			],
-
-			compact: false
-		}
-	},
-
+const config = module.exports = $C.extend(true, {}, defConfig, {
 	db: {
 		autoIndex: true,
 		uri: env.MONGOHQ_URL
@@ -109,4 +26,30 @@ module.exports = {
 		scope: /production/.test(env.SERVICE_NAME) ? 'production' : 'staging',
 		url: env.REDIS_URL
 	}
-};
+});
+
+config.babel = $C.extend(
+	{
+		deep: true,
+		concatArray: true
+	},
+
+	{},
+
+	defConfig.babel,
+
+	{
+		resolveModuleSource(source, from) {
+			if (path.isAbsolute(source) || /^(\.|babel-runtime)/.test(source)) {
+				return source;
+			}
+
+			const p = path.posix;
+			return p.relative(p.dirname(from.replace(/.*?src\//, '')), p.join('./server', source));
+		},
+
+		plugins: [
+			'transform-strict-mode'
+		]
+	}
+);
