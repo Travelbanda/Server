@@ -1,11 +1,11 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
 const
@@ -13,24 +13,10 @@ const
 	mongoose = require('mongoose');
 
 /**
- * Map of available languages
- */
-export let lang: ?Object;
-
-/**
- * Map of available permissions
- */
-export let permission: ?Object;
-
-/**
- * Map of available roles
- */
-export let role: ?Object;
-
-/**
  * Initializes enums
+ * @param [models] - map of additional models for initialization
  */
-export async function main() {
+export async function main(models?: Object) {
 	if (this.isNotInitialized('predefs')) {
 		return this.wait('predefs').then(() => main.call(this, ...arguments));
 	}
@@ -40,22 +26,9 @@ export async function main() {
 		return map;
 	}
 
-	await $C({
-		LangEnum(el) {
-			lang = el;
-		},
-
-		PermissionEnum(el) {
-			permission = el;
-		}
-
-	}).async.forEach((init, model, data, o) => {
+	await $C({...models}).async.forEach((init, model, data, o) => {
 		o.wait(async () => {
-			init(
-				$C(await mongoose.model(model).find({})).reduce(reduce, {})
-			);
+			init($C(await mongoose.model(model).find({})).reduce(reduce, {}));
 		});
 	});
-
-	role = await require('./enums.roles')();
 }
