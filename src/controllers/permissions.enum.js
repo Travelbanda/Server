@@ -8,10 +8,8 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Base from 'controllers/base';
+import Enum from 'controllers/enum';
 import { controller } from 'controllers/core/controller';
 
-@controller(exports)
-export default class Action extends Base {
-
-}
+@controller(exports, {abstract: true})
+export default class PermissionEnum extends Enum {}
