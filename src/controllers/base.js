@@ -1,15 +1,15 @@
 'use strict';
 
 /*!
- * TravelChat Client
- * https://github.com/Travelbanda/TravelChat
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
- * Released under the FSFUL license
- * https://github.com/Travelbanda/TravelChat/blob/master/LICENSE
+ * Released under the MIT license
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Chain from './core/chain';
-import { controller } from './core/controller';
+import Chain from 'controllers/core/chain';
+import { controller } from 'controllers/core/controller';
 
 const
 	$C = require('collection.js'),

@@ -1,19 +1,19 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
 import Store from 'core/store';
-import ModelConstructor from './core/constructor';
+import ModelConstructor from 'models/core/constructor';
 import joi, { cache as schemaCache } from 'core/validation';
 import { lang, status, role } from 'init/enums';
-import { model, index, objectId, now } from './core/model';
-import { dataCache, timeCache } from './core/cache';
+import { model, index, objectId, now } from 'models/core/model';
+import { dataCache, timeCache } from 'models/core/cache';
 
 const
 	$C = require('collection.js'),
@@ -156,56 +156,10 @@ export default class Base extends ModelConstructor {
 			}
 		}
 
-		joi.get($$.query, null, () => {
-			const base = {
-				async $service(value) {
-					const
-						values = [].concat(value);
-
-					if (await mongoose.model('Service').count({_id: {$in: values}}) !== values.length) {
-						throw boom.badRequest(l`The specified services doesn't exist`, {values});
-					}
-
-					return value;
-				},
-
-				async $hotel(value) {
-					const
-						values = [].concat(value);
-
-					if (await mongoose.model('Hotel').count({_id: {$in: values}}) !== values.length) {
-						throw boom.badRequest(l`The specified hotel doesn't exist`, {values});
-					}
-
-					return value;
-				},
-
-				$hotelId(id) {
-					return mongoose.model('Hotel').parseId(id);
-				},
-
-				async $staff(value) {
-					const
-						values = [].concat(value);
-
-					if (await mongoose.model('Staff').count({_id: {$in: values}}) !== values.length) {
-						throw boom.badRequest(l`The specified workers doesn't exist`, {values});
-					}
-
-					return value;
-				}
-			};
-
-			return {
-				$schema: {
-					...params.fields,
-					_id: joi.get('objectIds')
-				},
-
-				$pre: base,
-				$post: base
-			};
-		});
+		joi.get($$.query, null, () => ({
+			...params.fields,
+			_id: joi.get('objectIds')
+		}));
 	}
 
 	/* eslint-disable no-unused-vars */

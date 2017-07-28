@@ -1,18 +1,18 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Base, { $$ as $$base } from './base';
+import Base, { $$ as $$base } from 'models/base';
 import Store from 'core/store';
 import joi from 'core/validation';
-import { model, type, index } from './core/model';
-import * as _ from './core/types';
+import { model, type, index } from 'models/core/model';
+import * as _ from 'models/core/types';
 
 export const
 	$$ = new Store();

@@ -1,15 +1,15 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Enum from './enum';
-import { model } from './core/model';
+import Enum from 'models/enum';
+import { model } from 'models/core/model';
 
 @model(exports)
 export default class PermissionEnum extends Enum {}

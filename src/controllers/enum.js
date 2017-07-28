@@ -1,15 +1,15 @@
 'use strict';
 
 /*!
- * TravelChat Client
- * https://github.com/Travelbanda/TravelChat
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
- * Released under the FSFUL license
- * https://github.com/Travelbanda/TravelChat/blob/master/LICENSE
+ * Released under the MIT license
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Base from './base';
-import { GET, controller } from './core/controller';
+import Base from 'controllers/base';
+import { GET, controller } from 'controllers/core/controller';
 
 @controller(exports, {abstract: true})
 export default class Enum extends Base {

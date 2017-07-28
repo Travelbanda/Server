@@ -1,15 +1,15 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Type from './type';
-import { objectId as objectIdType } from './types';
+import Type from 'models/core/type';
+import { objectId as objectIdType } from 'models/core/types';
 
 const
 	EventEmitter2 = require('eventemitter2').EventEmitter2,

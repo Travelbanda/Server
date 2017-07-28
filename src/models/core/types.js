@@ -1,14 +1,14 @@
 'use strict';
 
 /*!
- * V4Fire Client Core
- * https://github.com/V4Fire/Client
+ * V4Fire Server Core
+ * https://github.com/V4Fire/Server
  *
  * Released under the MIT license
- * https://github.com/V4Fire/Client/blob/master/LICENSE
+ * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import Type from './type';
+import Type from 'models/core/type';
 import joi from 'core/validation';
 import * as rules from 'core/const/validation';
 
