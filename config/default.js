@@ -17,6 +17,11 @@ const
 	{env} = process;
 
 const config = module.exports = $C.extend(true, {}, defConfig, {
+	serverSrc: [].concat(
+		path.join(__dirname, '../src'),
+		defConfig.src
+	),
+
 	db: {
 		autoIndex: true,
 		uri: env.MONGOHQ_URL
@@ -27,11 +32,6 @@ const config = module.exports = $C.extend(true, {}, defConfig, {
 		url: env.REDIS_URL
 	}
 });
-
-config.src = [].concat(
-	defConfig.src,
-	path.join(__dirname, '../src')
-);
 
 config.babel = $C.extend(
 	{
