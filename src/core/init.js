@@ -46,7 +46,7 @@ export default function factory(module: Object): Function {
 				return false;
 			}
 
-			return !(success.has(name) || fail.has(name));
+			return !(success.has(link) || fail.has(link));
 		};
 
 		/**
