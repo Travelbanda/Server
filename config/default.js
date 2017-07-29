@@ -65,7 +65,7 @@ config.babel = {
 					const
 						ends = [];
 
-					if (path.extname(source)) {
+					if (path.extname(source) === '.js') {
 						ends.push('');
 
 					} else {
