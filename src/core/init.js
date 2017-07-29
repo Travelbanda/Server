@@ -92,6 +92,24 @@ export default function factory(module: Object): Function {
 				main,
 				link;
 
+			function onError(err) {
+				fail.set(name, err);
+
+				if (link) {
+					fail.set(link, fail.get(name));
+
+					if (Object.isString(link) || link.eventName) {
+						e.emit(`${link.eventName || link}.error`, err);
+						e.removeAllListeners(`${link.eventName || link}.success`);
+					}
+				}
+
+				e.emit(`${name}.error`, err);
+				e.removeAllListeners(`${name}.success`);
+
+				throw err;
+			}
+
 			try {
 				main = require(src).main;
 
@@ -100,24 +118,6 @@ export default function factory(module: Object): Function {
 				}
 
 				link = main.link;
-				const onError = (err) => {
-					fail.set(name, err);
-
-					if (link) {
-						fail.set(link, fail.get(name));
-
-						if (Object.isString(link) || link.eventName) {
-							e.emit(`${link.eventName || link}.error`, err);
-							e.removeAllListeners(`${link.eventName || link}.success`);
-						}
-					}
-
-					e.emit(`${name}.error`, err);
-					e.removeAllListeners(`${name}.success`);
-
-					throw err;
-				};
-
 				o.wait(async () => {
 					try {
 						success.set(name, await main.call(e, ...args));
