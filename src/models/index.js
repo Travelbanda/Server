@@ -24,6 +24,10 @@ module.exports = async () => {
 		login = db.username ? `${db.username}:${db.password}@` : '',
 		connection = db.uri || `mongodb://${login}${db.host}:${db.port}/${db.database}`;
 
-	await mongoose.connect(connection, {...db.options, autoIndex: !isProd || Boolean(process.env.CREATE_INDEX)});
+	await mongoose.connect(connection, {
+		...db.options,
+		autoIndex: process.env.NODE_ENV !== 'production' || Number(process.env.CREATE_INDEX)
+	});
+
 	return models(module.parent)();
 };
