@@ -19,7 +19,7 @@ const
 const config = module.exports = $C.extend(true, {}, defConfig, {
 	serverSrc: [].concat(
 		path.join(__dirname, '../src'),
-		defConfig.src
+		defConfig.coreSrc
 	),
 
 	db: {
