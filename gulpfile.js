@@ -18,7 +18,8 @@ module.exports = function (gulp = require('gulp')) {
 		cached = require('gulp-cached');
 
 	const
-		paths = $C(config.serverSrc).map((el) => path.join(path.relative(__dirname, el), '/**/*'));
+		dest = config.src,
+		paths = $C(dest.server).map((el) => path.join(path.relative(__dirname, el), '/**/*'));
 
 	gulp.task('cleanServer', (cb) => {
 		const del = require('del');
@@ -33,14 +34,17 @@ module.exports = function (gulp = require('gulp')) {
 			through = require('through2'),
 			isPathInside = require('is-path-inside');
 
-		const buildTask = (src, opts) => {
+		const buildTask = (src, opts = {}) => {
+			const
+				fDest = path.join(dest.serverOutput(), opts.base);
+
 			return [
 				(cb) => gulp.src(`${src}.js`, opts)
 					.pipe(plumber())
 					.pipe(cached('server'))
 					.pipe(through.obj((file, enc, cb) => {
 						if (
-							$C(config.serverSrc).some((el) => isPathInside(file.path, path.join(el, 'models'))) &&
+							$C(dest.server).some((el) => isPathInside(file.path, path.join(el, 'models'))) &&
 							path.basename(path.dirname(file.path)) === 'models' &&
 							path.basename(file.path) !== 'index.js'
 
@@ -52,18 +56,18 @@ module.exports = function (gulp = require('gulp')) {
 					}))
 
 					.pipe(babel(config.babel.server))
-					.pipe(gulp.dest('./dist/server'))
+					.pipe(gulp.dest(fDest))
 					.on('end', cb),
 
 				(cb) => gulp.src([src, `!${src}.js`], opts)
-					.pipe(gulp.dest('./dist/server'))
+					.pipe(gulp.dest(fDest))
 					.on('end', cb)
 			];
 		};
 
 		const tasks = $C(paths.slice(1)).reduce(
 			(tasks, el, i) => tasks.concat(buildTask(el, {base: 'node_modules'})),
-			buildTask(paths[0])
+			buildTask(paths[0], {base: path.relative(dest.cwd, dest.server[0]).split(path.sep)[0]})
 		);
 
 		async.parallel(tasks, cb);

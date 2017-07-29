@@ -10,17 +10,20 @@
 
 const
 	$C = require('collection.js'),
+	fs = require('fs'),
 	path = require('path'),
 	defConfig = require('@v4fire/core/config/default');
 
 const
 	{env} = process;
 
-const config = module.exports = $C.extend(true, {}, defConfig, {
-	serverSrc: [].concat(
-		path.join(__dirname, '../src'),
-		defConfig.coreSrc
-	),
+const config = module.exports = $C.extend(defConfig.extend, Object.create(defConfig), {
+	src: {
+		server: [path.join(__dirname, '../src'), defConfig.src.core],
+		serverOutput() {
+			return path.join(this.output(), 'server');
+		}
+	},
 
 	db: {
 		autoIndex: true,
@@ -46,12 +49,39 @@ config.babel = {
 
 		{
 			resolveModuleSource(source, from) {
-				if (path.isAbsolute(source) || /^(\.|babel-runtime)/.test(source)) {
-					return source;
+				const
+					{src} = config;
+
+				if (!path.isAbsolute(source) && /^[^./\\]/.test(source)) {
+					const paths = [].concat(
+						src.server[0],
+						src.cwd,
+						src.server.slice(1)
+					);
+
+					const
+						ends = [];
+
+					if (path.extname(source)) {
+						ends.push('');
+
+					} else {
+						ends.push('.js', '/index.js');
+					}
+
+					for (let i = 0; i < paths.length; i++) {
+						for (let j = 0; j < ends.length; j++) {
+							const
+								file = path.join(paths[i], source + ends[j]);
+
+							if (fs.existsSync(file)) {
+								return path.relative(path.dirname(from), file).replace(/\\/g, '/');
+							}
+						}
+					}
 				}
 
-				const p = path.posix;
-				return p.relative(p.dirname(from.replace(/.*?src\//, '')), p.join('./server', source));
+				return source;
 			},
 
 			plugins: [
