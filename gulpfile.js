@@ -19,7 +19,7 @@ module.exports = function (gulp = require('gulp')) {
 
 	const
 		dest = config.src,
-		paths = $C(dest.server).map((el) => path.join(path.relative(__dirname, el), '/**/*'));
+		paths = $C(dest.server).map((el) => path.join(el, '/**/*'));
 
 	gulp.task('cleanServer', (cb) => {
 		const del = require('del');
