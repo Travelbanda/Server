@@ -31,7 +31,7 @@ export default async function (counterModel: string = 'Counter') {
 	if (dbVersion !== VERSION) {
 		const
 			i = (src) => parseInt(path.basename(src)),
-			files = glob.sync(path.join(config.serverSrc[0], './patches/*.js')).sort((a, b) => i(a) - i(b));
+			files = glob.sync(path.join(config.src.server[0], './patches/*.js')).sort((a, b) => i(a) - i(b));
 
 		await $C(files).async.forEach(async (file) => {
 			const
