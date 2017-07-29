@@ -45,7 +45,7 @@
   },
   "optionalDependencies": {
     "async": "^2.5.0",
-    "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "babel-plugin-transform-strict-mode": "^6.24.1",
     "del": "^3.0.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",

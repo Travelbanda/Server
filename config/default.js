@@ -33,28 +33,30 @@ const config = module.exports = $C.extend(true, {}, defConfig, {
 	}
 });
 
-config.babel = $C.extend(
-	{
-		deep: true,
-		concatArray: true
-	},
-
-	{},
-
-	defConfig.babel,
-
-	{
-		resolveModuleSource(source, from) {
-			if (path.isAbsolute(source) || /^(\.|babel-runtime)/.test(source)) {
-				return source;
-			}
-
-			const p = path.posix;
-			return p.relative(p.dirname(from.replace(/.*?src\//, '')), p.join('./server', source));
+config.babel = {
+	server: $C.extend(
+		{
+			deep: true,
+			concatArray: true
 		},
 
-		plugins: [
-			'transform-strict-mode'
-		]
-	}
-);
+		{},
+
+		defConfig.babel,
+
+		{
+			resolveModuleSource(source, from) {
+				if (path.isAbsolute(source) || /^(\.|babel-runtime)/.test(source)) {
+					return source;
+				}
+
+				const p = path.posix;
+				return p.relative(p.dirname(from.replace(/.*?src\//, '')), p.join('./server', source));
+			},
+
+			plugins: [
+				'transform-strict-mode'
+			]
+		}
+	)
+};
