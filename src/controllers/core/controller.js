@@ -12,7 +12,7 @@ const
 	$C = require('collection.js');
 
 const
-	controllers = {};
+	controllers = new WeakMap();
 
 /**
  * Defines a controller
@@ -23,19 +23,15 @@ const
  */
 export function controller(exports, opts?: Object = {}) {
 	return (target) => {
-		controllers[target.name] = true;
-
-		const
-			parent = Object.getPrototypeOf(target);
-
 		exports.main = async function (controller) {
 			await new target(controller, opts, {
 				event: this,
-				parent: controllers[parent.name] && parent
+				parent: controllers.get(Object.getPrototypeOf(target))
 			});
 		};
 
 		exports.main.eventName = target.name;
+		controllers.set(target, target);
 	};
 }
 

@@ -34,6 +34,7 @@ module.exports = function (gulp = require('gulp')) {
 
 		async.parallel([
 			(cb) => gulp.src('./src/@(server|core|lang)/**/*.js')
+
 				.pipe(plumber())
 				.pipe(cached('server'))
 				.pipe(through.obj((file, enc, cb) => {
@@ -43,7 +44,7 @@ module.exports = function (gulp = require('gulp')) {
 						path.basename(file.path) !== 'index.js'
 
 					) {
-						file.contents = new Buffer(require('./build/prop')(String(file.contents), 'model'));
+						file.contents = new Buffer(require('@v4fire/core/build/prop')(String(file.contents), 'model'));
 					}
 
 					cb(null, file);
@@ -70,7 +71,7 @@ module.exports = function (gulp = require('gulp')) {
 		}
 
 		server = spawn('node', ['--harmony', 'index.js'], {
-			env,
+			env: process.env,
 			silent: false
 		});
 

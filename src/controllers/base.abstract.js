@@ -16,7 +16,7 @@ const
 	mongoose = require('mongoose');
 
 const
-	Methods = Symbol();
+	Methods = Symbol('methods');
 
 @controller(exports, {abstract: true})
 export default class Base {
