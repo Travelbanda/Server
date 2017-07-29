@@ -13,10 +13,8 @@ import { controller } from 'controllers/core/controller';
 
 const
 	$C = require('collection.js'),
-	mongoose = require('mongoose');
-
-const
-	Methods = Symbol('methods');
+	mongoose = require('mongoose'),
+	methods = Symbol('methods');
 
 @controller(exports, {abstract: true})
 export default class Base {
@@ -30,8 +28,8 @@ export default class Base {
 		const
 			constr = this.constructor;
 
-		if (parent && event.isNotInitialized(parent.name)) {
-			return event.wait(parent.name).then(() => new constr(...arguments));
+		if (parent && event.isNotInitialized(parent)) {
+			return event.wait(parent).then(() => new constr(...arguments));
 		}
 
 		const mBlacklist = {
@@ -44,7 +42,7 @@ export default class Base {
 
 		const
 			name = this.constructor.name,
-			methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this)).union(parent && parent[Methods] || []);
+			methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this)).union(parent && parent[methods] || []);
 
 		if (!opts.abstract) {
 			let Model;
@@ -71,6 +69,6 @@ export default class Base {
 			});
 		}
 
-		constr[Methods] = methods;
+		constr[methods] = methods;
 	}
 }

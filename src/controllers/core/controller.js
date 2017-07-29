@@ -30,7 +30,7 @@ export function controller(exports, opts?: Object = {}) {
 			});
 		};
 
-		exports.main.eventName = target.name;
+		exports.main.link = target;
 		controllers.set(target, target);
 	};
 }
