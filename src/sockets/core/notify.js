@@ -8,12 +8,9 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import init from 'core/init';
+const
+	config = require('config'),
+	NRP = require('node-redis-pubsub');
 
-/**
- * Initializes workers
- */
-module.exports = () => {
-	console.log('WORKER_MODE is enabled!');
-	return init(module.parent)();
-};
+export const
+	notifyServer = new NRP(config.redis);
