@@ -13,4 +13,4 @@ import baseConfig from '@v4fire/core/src/config';
 const
 	$C = require('collection.js');
 
-export default $C.extend(true, {}, baseConfig, CONFIG);
+export default $C.extend(true, {}, baseConfig);
