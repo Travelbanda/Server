@@ -12,9 +12,6 @@ const
 	$C = require('collection.js'),
 	mongoose = require('mongoose');
 
-const
-	{ObjectId} = mongoose.Types;
-
 /**
  * Initializes default roles
  *
@@ -45,14 +42,8 @@ export default async function (
 		return map;
 	}, {});
 
-	const admin = {
-		_id: new ObjectId(),
-		name: 'admin',
-		permissions: [p.AdminAccess]
-	};
-
 	return {
-		roles: {admin},
+		roles: {},
 		permissions: p,
 		create() {
 			return Role.create(
