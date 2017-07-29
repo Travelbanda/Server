@@ -92,7 +92,10 @@ config.babel = {
 			},
 
 			plugins: [
-				'transform-strict-mode'
+				'transform-strict-mode',
+				['transform-es2015-modules-commonjs', {
+					'allowTopLevelThis': true
+				}]
 			]
 		}
 	)
