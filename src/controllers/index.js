@@ -9,4 +9,9 @@
  */
 
 import controllers from 'core/init';
-module.exports = (router) => controllers(module)(router);
+
+/**
+ * Initializes controllers
+ * @param router - KOA router
+ */
+module.exports = (router) => controllers(module.parent)(router);
