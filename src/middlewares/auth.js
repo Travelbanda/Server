@@ -8,8 +8,6 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
-import { role } from 'init/enums';
-
 const
 	mongoose = require('mongoose');
 
