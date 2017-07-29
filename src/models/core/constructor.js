@@ -29,16 +29,14 @@ export default class ModelConstructor {
 	constructor(fields: Object, opts: Object, {parent, event}: {parent?: Function, event: EventEmitter2}) {
 		const
 			constr = this.constructor,
-			proto = Object.getPrototypeOf(this),
-			parentName = parent && parent.name;
+			proto = Object.getPrototypeOf(this);
 
-		if (parent && event.isNotInitialized(parentName)) {
-			return event.wait(parentName).then(() => new constr(...arguments));
+		if (parent && event.isNotInitialized(parent)) {
+			return event.wait(parent).then(() => new constr(...arguments));
 		}
 
-		const {name} = constr;
-		mixins.statics[name] = mixins.statics[name] || {};
-		mixins.methods[name] = mixins.methods[name] || {};
+		mixins.statics.set(constr, mixins.statics.get(constr) || {});
+		mixins.methods.set(constr, mixins.methods.get(constr) || {});
 
 		this.fields = $C(fields).reduce((schema, el, key) => {
 			const
@@ -123,12 +121,15 @@ export default class ModelConstructor {
 				}
 
 				if (cache && !Object.isFunction(el)) {
+					const
+						v = cache.get(constr);
+
 					let
-						mixin = cache[name][key];
+						mixin = v[key];
 
 					if (mixin && parent) {
 						const
-							parentProp = cache[parent.name][key];
+							parentProp = cache.get[parent][key];
 
 						if (parentProp) {
 							if (Object.isArray(parentProp) && Object.isArray(mixin)) {
@@ -140,7 +141,7 @@ export default class ModelConstructor {
 						}
 					}
 
-					cache[name][key] = obj[key] = map[key] = mixin || el;
+					v[key] = obj[key] = map[key] = mixin || el;
 					return;
 				}
 
@@ -156,6 +157,7 @@ export default class ModelConstructor {
 			};
 		}
 
+		const {name} = constr;
 		const s = schema.statics = {
 			get modelName() {
 				return name;
