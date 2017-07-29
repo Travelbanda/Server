@@ -82,7 +82,7 @@ config.babel = {
 							}
 
 							if (exists[file]) {
-								return path.relative(path.dirname(from), file).replace(/\\/g, '/');
+								return `./${path.relative(path.dirname(from), file).replace(/\\/g, '/')}`;
 							}
 						}
 					}
