@@ -36,6 +36,9 @@ const config = module.exports = $C.extend(defConfig.extend, Object.create(defCon
 	}
 });
 
+const
+	exists = {};
+
 config.babel = {
 	server: $C.extend(
 		{
@@ -74,7 +77,11 @@ config.babel = {
 							const
 								file = path.join(paths[i], source + ends[j]);
 
-							if (fs.existsSync(file)) {
+							if (file in exists === false) {
+								exists[file] = fs.existsSync(file);
+							}
+
+							if (exists[file]) {
 								return path.relative(path.dirname(from), file).replace(/\\/g, '/');
 							}
 						}
