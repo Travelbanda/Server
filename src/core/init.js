@@ -34,39 +34,48 @@ export default function factory(module: Object): Function {
 	return async (...args) => {
 		const
 			e = new EventEmitter({wildcard: true, maxListeners: 100}),
-			success = {},
-			fail = {};
+			success = new Map(),
+			fail = new Map();
 
 		/**
-		 * Returns true if a module by the specified name is not initialized
-		 * @param name
+		 * Returns true if a module by the specified link is not initialized
+		 * @param link
 		 */
-		e.isNotInitialized = function (name: ?string): boolean {
-			if (name == null) {
+		e.isNotInitialized = function (link: any): boolean {
+			if (link == null) {
 				return false;
 			}
 
-			return !(name in success || name in fail);
+			return !(success.has(name) || fail.has(name));
 		};
 
 		/**
-		 * Waits a module by the specified name
-		 * @param name
+		 * Waits a module by the specified link
+		 * @param link
 		 */
-		e.wait = function (name: string): Promise {
+		e.wait = function (link: any): Promise {
 			return new Promise((resolve, reject) => {
-				if (name in success) {
-					resolve(success[name]);
-					return;
-				}
+				const fn = () => {
+					if (success.has(link)) {
+						resolve(success.get(link));
+						return true;
+					}
 
-				if (name in fail) {
-					reject(fail[name]);
-					return;
-				}
+					if (fail.has(link)) {
+						reject(fail.get(link));
+						return true;
+					}
+				};
 
-				e.once(`${name}.success`, resolve);
-				e.once(`${name}.error`, reject);
+				if (!fn()) {
+					if (Object.isString(link)) {
+						e.once(`${link}.success`, resolve);
+						e.once(`${link}.error`, reject);
+
+					} else {
+						setImmediate(fn);
+					}
+				}
 			});
 		};
 
@@ -79,39 +88,53 @@ export default function factory(module: Object): Function {
 				return;
 			}
 
-			function onError(err) {
-				fail[name] = err;
+			let
+				main,
+				link;
 
-				if (main && main.eventName) {
-					fail[main.eventName] = fail[name];
-					e.emit(`${main.eventName}.error`, err);
-					e.removeAllListeners(`${main.eventName}.success`);
-				}
-
-				e.emit(`${name}.error`, err);
-				e.removeAllListeners(`${name}.success`);
-
-				throw err;
-			}
-
-			let main;
 			try {
 				main = require(src).main;
+
 				if (!main) {
 					return;
 				}
 
+				link = main.link;
+				const onError = (err) => {
+					fail.set(name, err);
+
+					if (link) {
+						fail.set(link, fail.get(name));
+
+						if (Object.isString(link) || link.eventName) {
+							e.emit(`${link.eventName || link}.error`, err);
+							e.removeAllListeners(`${link.eventName || link}.success`);
+						}
+					}
+
+					e.emit(`${name}.error`, err);
+					e.removeAllListeners(`${name}.success`);
+
+					throw err;
+				};
+
 				o.wait(async () => {
 					try {
-						success[name] = await main.call(e, ...args);
+						success.set(name, await main.call(e, ...args));
 
-						if (main.eventName) {
-							success[main.eventName] = success[name];
-							e.emit(`${main.eventName}.success`, success[name]);
-							e.removeAllListeners(`${main.eventName}.error`);
+						const
+							v = success.get(name);
+
+						if (link) {
+							success.set(link, v);
+
+							if (Object.isString(link) || link.eventName) {
+								e.emit(`${link.eventName || link}.success`, v);
+								e.removeAllListeners(`${link.eventName || link}.error`);
+							}
 						}
 
-						e.emit(`${name}.success`, success[name]);
+						e.emit(`${name}.success`, v);
 						e.removeAllListeners(`${name}.error`);
 
 					} catch (err) {
