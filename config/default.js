@@ -53,7 +53,7 @@ config.babel = {
 		{
 			resolveModuleSource(source, from) {
 				const
-					{src} = config;
+					src = this.resolveModuleSource.src || config.src;
 
 				if (!path.isAbsolute(source) && /^[^./\\]/.test(source)) {
 					const paths = [].concat(
