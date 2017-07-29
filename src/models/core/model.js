@@ -19,8 +19,8 @@ const
 	{Mixed} = mongoose.Schema.Types;
 
 export const
-	fields = {},
-	mixins = {statics: {}, methods: {}},
+	fields = new WeakMap(),
+	mixins = {statics: new WeakMap(), methods: new WeakMap()},
 	initEvent = new EventEmitter2({maxListeners: 1e3});
 
 /**
@@ -33,36 +33,36 @@ export const
 export function model(exports, opts?: Object = {}) {
 	return (target) => {
 		const
-			name = target.name,
 			parent = Object.getPrototypeOf(target),
-			hasParent = fields[parent.name];
+			hasParent = fields.has(parent);
 
-		fields[name] = {};
-		initEvent.emit('model', name);
+		fields.set(target, {});
+		initEvent.emit('model', target);
+
+		const
+			v = fields.get(target);
 
 		if (hasParent) {
-			Object.setPrototypeOf(fields[name], fields[parent.name]);
+			Object.setPrototypeOf(v, fields.get(parent));
 		}
 
 		exports.main = async function () {
-			const obj = await new target(fields[name], opts, {
+			const obj = await new target(v, opts, {
 				event: this,
 				parent: hasParent && parent
 			});
 
 			if (obj.__onSchemaCreated) {
-				obj.__onSchemaCreated(obj.schema, {
-					name,
-					fields: obj.fields
-				});
+				obj.__onSchemaCreated(obj.schema, {fields: obj.fields});
 			}
 
 			if (!opts.abstract) {
 				const
-					Model = mongoose.model(name, obj.schema, name.dasherize());
+					nm = target.name,
+					Model = mongoose.model(nm, obj.schema, nm.dasherize());
 
 				if (obj.__onModelCreated) {
-					obj.__onModelCreated(Model, {name, fields: obj.fields});
+					obj.__onModelCreated(Model, {fields: obj.fields});
 				}
 
 				return Model;
@@ -71,7 +71,7 @@ export function model(exports, opts?: Object = {}) {
 			return null;
 		};
 
-		exports.main.eventName = target.name;
+		exports.main.link = target;
 	};
 }
 
@@ -89,7 +89,7 @@ export function prop(required: boolean) {
 				def = new Function(`return ${JSON.stringify(def)}`);
 			}
 
-			fields[model][key] = new Type({
+			fields.get(model)[key] = new Type({
 				type: Mixed,
 				default: def,
 				required
@@ -102,7 +102,7 @@ function factory(value, method) {
 	return (target, key) => {
 		initEvent.once('model', (model) => {
 			const
-				m = fields[model],
+				m = fields.get(model),
 				o = m[key];
 
 			if (Object.isFunction(m[key] = o[method])) {
@@ -201,7 +201,7 @@ export const unique = factory(undefined, 'unique');
 export function mixin(target, key, desc) {
 	initEvent.once('model', (model) => {
 		const cache = Object.isFunction(target) ? mixins.statics : mixins.methods;
-		cache[model] = mixins[model] || {};
-		cache[model][key] = desc.initializer ? desc.initializer() : desc.value;
+		cache.set(model, cache.get(model) || {});
+		cache.get(model)[key] = desc.initializer ? desc.initializer() : desc.value;
 	});
 }

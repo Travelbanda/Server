@@ -14,6 +14,9 @@ const
 	mongoose = require('mongoose'),
 	db = require('config').db;
 
+/**
+ * Initializes models
+ */
 module.exports = async () => {
 	mongoose.Promise = Promise;
 
@@ -22,5 +25,5 @@ module.exports = async () => {
 		connection = db.uri || `mongodb://${login}${db.host}:${db.port}/${db.database}`;
 
 	await mongoose.connect(connection, {...db.options, autoIndex: !isProd || Boolean(process.env.CREATE_INDEX)});
-	return models(module)();
+	return models(module.parent)();
 };

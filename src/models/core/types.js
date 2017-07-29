@@ -18,7 +18,11 @@ const
 export const
 	schemaTypes = mongoose.Schema.Types;
 
-function toArray(value) {
+/**
+ * Converts the specified joi type to an array type
+ * @param value
+ */
+export function toArray(value: joi): [joi, joi] {
 	return [value.toArray(), joi.array().items(value)];
 }
 
@@ -33,46 +37,41 @@ export const objectId = new Type({
 	joi: 'objectId'
 });
 
-joi.get('status', null, () => joi.status());
-joi.get('statuses', 'status', toArray);
-
-/**
- * Status type
- */
-export const status = new Type({
-	type: schemaTypes.ObjectId,
-	joi: 'status'
-});
-
-joi.get('lang', null, () => joi.lang());
-joi.get('langs', 'lang', toArray);
+if (joi.lang) {
+	joi.get('lang', null, () => joi.lang());
+	joi.get('langs', 'lang', toArray);
+}
 
 /**
  * Language type
- */
-export const lang = new Type({
+*/
+export const lang = joi.lang && new Type({
 	type: schemaTypes.ObjectId,
 	joi: 'lang'
 });
 
-joi.get('permission', null, () => joi.permission());
-joi.get('permissions', 'permission', toArray);
+if (joi.permission) {
+	joi.get('permission', null, () => joi.permission());
+	joi.get('permissions', 'permission', toArray);
+}
 
 /**
  * Permission type
  */
-export const permission = new Type({
+export const permission = joi.permission && new Type({
 	type: schemaTypes.ObjectId,
 	joi: 'permission'
 });
 
-joi.get('role', null, () => joi.role());
-joi.get('roles', 'role', toArray);
+if (joi.role) {
+	joi.get('role', null, () => joi.role());
+	joi.get('roles', 'role', toArray);
+}
 
 /**
  * Role type
  */
-export const role = new Type({
+export const role = joi.role && new Type({
 	type: schemaTypes.ObjectId,
 	joi: 'role'
 });
@@ -352,44 +351,3 @@ export const phone = new Type({
 	trim: true,
 	joi: 'phone'
 });
-
-joi.get('time', null, () => ({
-	from: joi.array().max(2).default([])
-		.ordered(
-			joi.number()
-				.integer()
-				.min(0)
-				.max(23),
-
-			joi.number()
-				.integer()
-				.min(0)
-				.max(59)
-		),
-
-	to: joi.array().max(2).default([])
-		.ordered(
-			joi.number()
-				.integer()
-				.min(0)
-				.max(23),
-
-			joi.number()
-				.integer()
-				.min(0)
-				.max(59)
-		)
-}));
-
-/**
- * Time type
- */
-export const time = new Type({
-	type: schemaTypes.Mixed,
-	joi: 'time'
-});
-
-/**
- * GEO type
- */
-export const location = new Type(float.array.ok);

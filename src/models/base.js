@@ -937,7 +937,7 @@ export default class Base extends ModelConstructor {
 	}
 
 	/**
-	 * Humanizes db constants (role, status, lang)
+	 * Humanizes db constants
 	 *
 	 * @param data - source data
 	 * @param constant - constant name or an object with advanced parameters ({[constant]: {field, reject}})
@@ -966,20 +966,6 @@ export default class Base extends ModelConstructor {
 					}
 
 					return g(role[field]);
-
-				case 'status':
-					if (Object.isArray(field)) {
-						const
-							arr = [];
-
-						for (let i = 0; i < field.length; i++) {
-							arr.push(g(status[el] && status[el].name));
-						}
-
-						return arr;
-					}
-
-					return g(status[field] && status[field].name);
 
 				case 'lang':
 					if (Object.isArray(field)) {
