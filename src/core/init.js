@@ -35,8 +35,7 @@ export default function factory(module: Object): Function {
 		const
 			e = new EventEmitter({wildcard: true, maxListeners: 100}),
 			success = new Map(),
-			fail = new Map(),
-			pending = new Map();
+			fail = new Map();
 
 		/**
 		 * Returns true if a module by the specified link is not initialized
@@ -52,10 +51,16 @@ export default function factory(module: Object): Function {
 
 		/**
 		 * Waits a module by the specified link
+		 *
 		 * @param link
+		 * @param [base] - link base dir
 		 */
-		e.wait = function (link: any): Promise {
+		e.wait = function (link: any, base?: string): Promise {
 			return new Promise((resolve, reject) => {
+				if (base && base !== dir) {
+					resolve();
+				}
+
 				const fn = () => {
 					if (success.has(link)) {
 						resolve(success.get(link));

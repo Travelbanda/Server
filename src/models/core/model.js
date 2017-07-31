@@ -13,6 +13,7 @@ import Type from 'models/core/type';
 import { objectId as objectIdType } from 'models/core/types';
 
 const
+	path = require('path'),
 	EventEmitter2 = require('eventemitter2').EventEmitter2,
 	mongoose = require('mongoose');
 
@@ -75,6 +76,7 @@ export function model(module, opts?: Object = {}) {
 			return null;
 		};
 
+		target.dir = path.basename(module.filename);
 		module.exports.main.link = target;
 	};
 }
