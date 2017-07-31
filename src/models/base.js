@@ -37,7 +37,7 @@ const
 export const
 	$$ = new Store();
 
-@model(exports, {abstract: true})
+@model({abstract: true})
 export default class Base extends ModelConstructor {
 	/**
 	 * Id

@@ -11,7 +11,7 @@
 import Base from 'controllers/base';
 import { GET, controller } from 'controllers/core/controller';
 
-@controller(exports, {abstract: true})
+@controller({abstract: true})
 export default class Enum extends Base {
 	/**
 	 * Returns enums

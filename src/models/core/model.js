@@ -31,10 +31,9 @@ export const
  * Defines a model
  *
  * @decorator
- * @param exports - exports object
  * @param [opts] - additional options
  */
-export function model(exports, opts?: Object = {}) {
+export function model(opts?: Object = {}) {
 	return (target) => {
 		const
 			parent = Object.getPrototypeOf(target),
@@ -50,6 +49,7 @@ export function model(exports, opts?: Object = {}) {
 			Object.setPrototypeOf(v, fields.get(parent));
 		}
 
+		const {exports} = module.parent;
 		exports.main = async function () {
 			const obj = await new target(v, opts, {
 				event: this,

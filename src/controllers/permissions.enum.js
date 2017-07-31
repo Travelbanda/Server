@@ -11,5 +11,5 @@
 import Enum from 'controllers/enum';
 import { controller } from 'controllers/core/controller';
 
-@controller(exports, {abstract: true})
+@controller({abstract: true})
 export default class PermissionEnum extends Enum {}

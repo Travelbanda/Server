@@ -18,7 +18,7 @@ import * as _ from 'models/core/types';
 export const
 	$$ = new Store();
 
-@model(exports, {abstract: true})
+@model({abstract: true})
 export default class Role extends Enum {
 	/**
 	 * Parent role

@@ -18,11 +18,11 @@ const
  * Defines a controller
  *
  * @decorator
- * @param exports - exports object
  * @param [opts] - additional options
  */
-export function controller(exports, opts?: Object = {}) {
+export function controller(opts?: Object = {}) {
 	return (target) => {
+		const {exports} = module.parent;
 		exports.main = async function (controller) {
 			await new target(controller, opts, {
 				event: this,

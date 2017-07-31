@@ -35,7 +35,8 @@ export default function factory(module: Object): Function {
 		const
 			e = new EventEmitter({wildcard: true, maxListeners: 100}),
 			success = new Map(),
-			fail = new Map();
+			fail = new Map(),
+			pending = new Map();
 
 		/**
 		 * Returns true if a module by the specified link is not initialized
