@@ -11,5 +11,5 @@
 import Enum from 'models/enum';
 import { model } from 'models/core/model';
 
-@model({abstract: true})
+@model(module, {abstract: true})
 export default class LangEnum extends Enum {}

@@ -61,7 +61,7 @@ const token = new Type({
 	deviceToken: _.description.ok
 });
 
-@model({abstract: true})
+@model(module, {abstract: true})
 export default class User extends Base {
 	/**
 	 * Delete status

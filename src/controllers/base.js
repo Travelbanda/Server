@@ -19,7 +19,7 @@ const
 export const
 	$$ = new Store();
 
-@controller({abstract: true})
+@controller(module, {abstract: true})
 export default class Base {
 	/**
 	 * @param router - Router instance

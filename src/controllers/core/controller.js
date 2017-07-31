@@ -18,19 +18,19 @@ const
  * Defines a controller
  *
  * @decorator
+ * @param module - module object
  * @param [opts] - additional options
  */
-export function controller(opts?: Object = {}) {
+export function controller(module, opts?: Object = {}) {
 	return (target) => {
-		const {exports} = module.parent;
-		exports.main = async function (controller) {
+		module.exports.main = async function (controller) {
 			await new target(controller, opts, {
 				event: this,
 				parent: controllers.get(Object.getPrototypeOf(target))
 			});
 		};
 
-		exports.main.link = target;
+		module.exports.main.link = target;
 		controllers.set(target, target);
 	};
 }

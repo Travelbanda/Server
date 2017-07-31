@@ -17,7 +17,7 @@ import * as _ from 'models/core/types';
 export const
 	$$ = new Store();
 
-@model({abstract: true})
+@model(module, {abstract: true})
 export default class Enum extends Base {
 	/**
 	 * Field name
