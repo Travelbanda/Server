@@ -59,6 +59,7 @@ export default function factory(module: Object): Function {
 			return new Promise((resolve, reject) => {
 				if (base && base !== dir) {
 					resolve();
+					return;
 				}
 
 				const fn = () => {
