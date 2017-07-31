@@ -168,16 +168,16 @@ export default class ModelConstructor {
 		schema.virtual('modelName').get(() => name);
 
 		const
-			statics = Object.getOwnPropertyNames(constr).union(parent && parent[$$.Statics] || []);
+			statics = Object.getOwnPropertyNames(constr).union(parent && parent[$$.statics] || []);
 
 		$C(statics).filter(filter(sBlacklist)).forEach(add(constr, s));
-		constr[$$.Statics] = statics;
+		constr[$$.statics] = statics;
 
 		const
-			methods = Object.getOwnPropertyNames(proto).union(parent && parent[$$.Methods] || []);
+			methods = Object.getOwnPropertyNames(proto).union(parent && parent[$$.methods] || []);
 
 		$C(methods).filter(filter(mBlacklist)).forEach(add(proto, m));
-		constr[$$.Methods] = methods;
+		constr[$$.methods] = methods;
 
 		this.schema = schema;
 	}

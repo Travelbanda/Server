@@ -8,13 +8,16 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
+import Store from 'core/store';
 import Chain from 'controllers/core/chain';
 import { controller } from 'controllers/core/controller';
 
 const
 	$C = require('collection.js'),
-	mongoose = require('mongoose'),
-	methods = Symbol('methods');
+	mongoose = require('mongoose');
+
+export const
+	$$ = new Store();
 
 @controller(exports, {abstract: true})
 export default class Base {
@@ -42,7 +45,7 @@ export default class Base {
 
 		const
 			name = this.constructor.name,
-			methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this)).union(parent && parent[methods] || []);
+			methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this)).union(parent && parent[$$.methods] || []);
 
 		if (!opts.abstract) {
 			let Model;
@@ -69,6 +72,6 @@ export default class Base {
 			});
 		}
 
-		constr[methods] = methods;
+		constr[$$.methods] = methods;
 	}
 }

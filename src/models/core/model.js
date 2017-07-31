@@ -8,6 +8,7 @@
  * https://github.com/V4Fire/Server/blob/master/LICENSE
  */
 
+import Store from 'core/store';
 import Type from 'models/core/type';
 import { objectId as objectIdType } from 'models/core/types';
 
@@ -22,6 +23,9 @@ export const
 	fields = new WeakMap(),
 	mixins = {statics: new WeakMap(), methods: new WeakMap()},
 	initEvent = new EventEmitter2({maxListeners: 1e3});
+
+export const
+	$$ = new Store();
 
 /**
  * Defines a model
