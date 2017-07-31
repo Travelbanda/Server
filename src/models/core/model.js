@@ -76,7 +76,7 @@ export function model(module, opts?: Object = {}) {
 			return null;
 		};
 
-		target.dir = path.basename(module.filename);
+		target.dir = path.dirname(module.filename);
 		module.exports.main.link = target;
 	};
 }
