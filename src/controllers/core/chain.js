@@ -77,6 +77,8 @@ export default class Chain {
 					return await handlers[i](ctx, next);
 
 				} catch (err) {
+					stderr(err);
+
 					if (err.throwed) {
 						throw err;
 					}
@@ -133,32 +135,38 @@ export default class Chain {
 			}
 
 			const
-				el = q[field];
+				arr = [].concat(q);
 
-			if (field in q === false) {
-				q[field] = from;
-
-			} else if (Object.isArray(el) && Object.isArray(from)) {
+			for (let i = 0; i < arr.length; i++) {
 				const
-					set = new Set();
+					q = arr[i],
+					el = q[field];
 
-				for (let i = 0; i < from.length; i++) {
-					set.add(c(from[i]));
-				}
+				if (field in q === false) {
+					q[field] = from;
 
-				const
-					fields = [];
+				} else if (Object.isArray(el) && Object.isArray(from)) {
+					const
+						set = new Set();
 
-				for (let i = 0; i < el.length; i++) {
-					if (set.has(c(el[i]))) {
-						fields.push(el[i]);
+					for (let i = 0; i < from.length; i++) {
+						set.add(c(from[i]));
 					}
+
+					const
+						fields = [];
+
+					for (let i = 0; i < el.length; i++) {
+						if (set.has(c(el[i]))) {
+							fields.push(el[i]);
+						}
+					}
+
+					q[field] = fields;
+
+				} else if (c(el) !== c(from)) {
+					q[field] = from;
 				}
-
-				q[field] = fields;
-
-			} else if (c(el) !== c(from)) {
-				q[field] = from;
 			}
 		}
 
@@ -173,11 +181,19 @@ export default class Chain {
 			o = this.chain;
 
 		const arr = [(ctx, next) => {
-			ctx.reqData = Object.reject({
-				...ctx.query,
-				...ctx.request.body,
-				...ctx.reqData
-			}, /^\$/);
+			const
+				{query, reqData, request: {body}} = ctx;
+
+			if (Object.isArray(body)) {
+				ctx.reqData = Object.assign(body.slice(), reqData);
+
+			} else {
+				ctx.reqData = Object.reject({
+					...query,
+					...body,
+					...reqData
+				}, /^\$/);
+			}
 
 			/**
 			 * Forks a context object
