@@ -39,10 +39,12 @@ export default function factory(module: Object): Function {
 
 		/**
 		 * Returns true if a module by the specified link is not initialized
+		 *
 		 * @param link
+		 * @param [base] - link base dir
 		 */
-		e.isNotInitialized = function (link: any): boolean {
-			if (link == null) {
+		e.isNotInitialized = function (link: any, base?: string): boolean {
+			if (link == null || base && base !== dir) {
 				return false;
 			}
 

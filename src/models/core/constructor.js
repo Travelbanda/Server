@@ -31,8 +31,8 @@ export default class ModelConstructor {
 			constr = this.constructor,
 			proto = Object.getPrototypeOf(this);
 
-		if (parent && parent.dir && event.isNotInitialized(parent)) {
-			return event.wait(parent, parent.dir).then(() => new constr(...arguments));
+		if (parent && parent.dir && event.isNotInitialized(parent, parent.dir)) {
+			return event.wait(parent).then(() => new constr(...arguments));
 		}
 
 		mixins.statics.set(constr, mixins.statics.get(constr) || {});
