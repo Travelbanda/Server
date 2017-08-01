@@ -54,9 +54,9 @@ export default function factory(module: Object): Function {
 		 * Waits a module by the specified link
 		 *
 		 * @param link
-		 * @param [base] - link base dir
+		 * @param [file]
 		 */
-		e.wait = function (link: any, base?: string): Promise {
+		e.wait = function (link: any, file?: string): Promise {
 			return new Promise(async (resolve, reject) => {
 				const fn = async () => {
 					if (success.has(link)) {
@@ -69,9 +69,9 @@ export default function factory(module: Object): Function {
 						return true;
 					}
 
-					if (base && base !== dir && !pending.has(base)) {
-						pending.add(base);
-						await loadDir([base]);
+					if (file && path.dirname(file) !== dir && !pending.has(file)) {
+						pending.add(file);
+						await loadDir([file]);
 						return fn();
 					}
 				};
@@ -91,7 +91,7 @@ export default function factory(module: Object): Function {
 		function loadDir(files) {
 			return $C(files).async.forEach((file, i, data, o) => {
 				const
-					src = path.join(dir, file),
+					src = path.resolve(dir, file),
 					name = path.basename(file, '.js').camelize(false);
 
 				if (file === 'index.js' || !fs.statSync(src).isFile()) {

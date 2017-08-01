@@ -32,7 +32,7 @@ export default class ModelConstructor {
 			proto = Object.getPrototypeOf(this);
 
 		if (parent && parent.dir && event.isNotInitialized(parent)) {
-			return event.wait(parent, parent.dir).then(() => new constr(...arguments));
+			return event.wait(parent, parent.file).then(() => new constr(...arguments));
 		}
 
 		mixins.statics.set(constr, mixins.statics.get(constr) || {});
