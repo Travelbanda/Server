@@ -129,7 +129,7 @@ export default class ModelConstructor {
 
 					if (mixin && parent) {
 						const
-							parentProp = cache.get[parent][key];
+							parentProp = cache.get(parent)[key];
 
 						if (parentProp) {
 							if (Object.isArray(parentProp) && Object.isArray(mixin)) {
