@@ -82,7 +82,7 @@ export default function factory(module: Object): Function {
 						e.once(`${link}.error`, reject);
 
 					} else {
-						setImmediate(fn);
+						await job();
 					}
 				}
 			});
