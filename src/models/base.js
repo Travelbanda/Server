@@ -11,7 +11,7 @@
 import Store from 'core/store';
 import ModelConstructor from 'models/core/constructor';
 import joi, { cache as schemaCache } from 'core/validation';
-import { lang, status, role } from 'init/enums';
+import { lang, role } from 'init/enums';
 import { model, index, objectId, now } from 'models/core/model';
 import { dataCache, timeCache } from 'models/core/cache';
 
