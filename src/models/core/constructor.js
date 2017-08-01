@@ -31,7 +31,7 @@ export default class ModelConstructor {
 			constr = this.constructor,
 			proto = Object.getPrototypeOf(this);
 
-		if (parent && parent.dir && event.isNotInitialized(parent)) {
+		if (parent && parent.file && event.isNotInitialized(parent)) {
 			return event.wait(parent, parent.file).then(() => new constr(...arguments));
 		}
 
