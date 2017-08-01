@@ -93,8 +93,8 @@ export default function factory(module: Object): Function {
 			});
 		};
 
-		function loadDir(dir) {
-			return $C(dir).async.forEach((file, i, data, o) => {
+		function loadDir(files) {
+			return $C(files).async.forEach((file, i, data, o) => {
 				const
 					src = path.join(dir, file),
 					name = path.basename(file, '.js').camelize(false);
