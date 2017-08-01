@@ -71,7 +71,7 @@ export default function factory(module: Object): Function {
 
 					if (file && path.dirname(file) !== dir && !pending.has(file)) {
 						pending.add(file);
-						await loadDir([file]);
+						await loadDir([file], file);
 						return fn();
 					}
 				};
@@ -88,7 +88,7 @@ export default function factory(module: Object): Function {
 			});
 		};
 
-		function loadDir(files) {
+		function loadDir(files, ctx) {
 			return $C(files).async.forEach((file, i, data, o) => {
 				const
 					src = path.resolve(dir, file),
@@ -144,8 +144,8 @@ export default function factory(module: Object): Function {
 								}
 							}
 
-							e.emit(`${name}.success`, v);
-							e.removeAllListeners(`${name}.error`);
+							e.emit(`${ctx || name}.success`, v);
+							e.removeAllListeners(`${ctx || name}.error`);
 
 						} catch (err) {
 							onError(err);
