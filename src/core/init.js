@@ -94,7 +94,7 @@ export default function factory(module: Object): Function {
 					src = path.resolve(dir, file),
 					name = path.basename(file, '.js').camelize(false);
 
-				if (file === 'index.js' || !fs.statSync(src).isFile()) {
+				if (name === 'index' || !fs.statSync(src).isFile()) {
 					return;
 				}
 
