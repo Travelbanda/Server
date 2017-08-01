@@ -58,11 +58,6 @@ export default function factory(module: Object): Function {
 		 */
 		e.wait = function (link: any, base?: string): Promise {
 			return new Promise(async (resolve, reject) => {
-				if (base && base !== dir) {
-					resolve();
-					return;
-				}
-
 				const fn = async () => {
 					if (success.has(link)) {
 						resolve(success.get(link));
