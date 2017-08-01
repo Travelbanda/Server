@@ -76,6 +76,12 @@ export default function factory(module: Object): Function {
 					}
 				};
 
+				const job = async () => {
+					if (!await fn()) {
+						setImmediate(job);
+					}
+				};
+
 				if (!await fn()) {
 					if (Object.isString(link)) {
 						e.once(`${link}.success`, resolve);
