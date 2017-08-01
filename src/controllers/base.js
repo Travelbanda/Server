@@ -31,8 +31,8 @@ export default class Base {
 		const
 			constr = this.constructor;
 
-		if (parent && event.isNotInitialized(parent)) {
-			return event.wait(parent).then(() => new constr(...arguments));
+		if (parent && parent.file && event.isNotInitialized(parent)) {
+			return event.wait(parent, parent.file).then(() => new constr(...arguments));
 		}
 
 		const mBlacklist = {

@@ -30,6 +30,7 @@ export function controller(module, opts?: Object = {}) {
 			});
 		};
 
+		target.file = module.filename;
 		module.exports.main.link = target;
 		controllers.set(target, target);
 	};
