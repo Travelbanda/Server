@@ -35,16 +35,15 @@ export default function factory(module: Object): Function {
 		const
 			e = new EventEmitter({wildcard: true, maxListeners: 100}),
 			success = new Map(),
-			fail = new Map();
+			fail = new Map(),
+			pending = new Set();
 
 		/**
 		 * Returns true if a module by the specified link is not initialized
-		 *
 		 * @param link
-		 * @param [base] - link base dir
 		 */
-		e.isNotInitialized = function (link: any, base?: string): boolean {
-			if (link == null || base && base !== dir) {
+		e.isNotInitialized = function (link: any): boolean {
+			if (link == null) {
 				return false;
 			}
 
@@ -58,13 +57,13 @@ export default function factory(module: Object): Function {
 		 * @param [base] - link base dir
 		 */
 		e.wait = function (link: any, base?: string): Promise {
-			return new Promise((resolve, reject) => {
+			return new Promise(async (resolve, reject) => {
 				if (base && base !== dir) {
 					resolve();
 					return;
 				}
 
-				const fn = () => {
+				const fn = async () => {
 					if (success.has(link)) {
 						resolve(success.get(link));
 						return true;
@@ -74,9 +73,15 @@ export default function factory(module: Object): Function {
 						reject(fail.get(link));
 						return true;
 					}
+
+					if (base && base !== dir && !pending.has(base)) {
+						pending.add(base);
+						await loadDir([base]);
+						return fn();
+					}
 				};
 
-				if (!fn()) {
+				if (!await fn()) {
 					if (Object.isString(link)) {
 						e.once(`${link}.success`, resolve);
 						e.once(`${link}.error`, reject);
@@ -88,74 +93,77 @@ export default function factory(module: Object): Function {
 			});
 		};
 
-		await $C(fs.readdirSync(dir)).async.forEach((file, i, data, o) => {
-			const
-				src = path.join(dir, file),
-				name = path.basename(file, '.js').camelize(false);
+		function loadDir(dir) {
+			return $C(dir).async.forEach((file, i, data, o) => {
+				const
+					src = path.join(dir, file),
+					name = path.basename(file, '.js').camelize(false);
 
-			if (file === 'index.js' || !fs.statSync(src).isFile()) {
-				return;
-			}
-
-			let
-				main,
-				link;
-
-			function onError(err) {
-				fail.set(name, err);
-
-				if (link) {
-					fail.set(link, fail.get(name));
-
-					if (Object.isString(link) || link.eventName) {
-						e.emit(`${link.eventName || link}.error`, err);
-						e.removeAllListeners(`${link.eventName || link}.success`);
-					}
-				}
-
-				e.emit(`${name}.error`, err);
-				e.removeAllListeners(`${name}.success`);
-
-				throw err;
-			}
-
-			try {
-				main = require(src).main;
-
-				if (!main) {
+				if (file === 'index.js' || !fs.statSync(src).isFile()) {
 					return;
 				}
 
-				link = main.link;
-				o.wait(async () => {
-					try {
-						success.set(name, await main.call(e, ...args));
+				let
+					main,
+					link;
 
-						const
-							v = success.get(name);
+				function onError(err) {
+					fail.set(name, err);
 
-						if (link) {
-							success.set(link, v);
+					if (link) {
+						fail.set(link, fail.get(name));
 
-							if (Object.isString(link) || link.eventName) {
-								e.emit(`${link.eventName || link}.success`, v);
-								e.removeAllListeners(`${link.eventName || link}.error`);
-							}
+						if (Object.isString(link) || link.eventName) {
+							e.emit(`${link.eventName || link}.error`, err);
+							e.removeAllListeners(`${link.eventName || link}.success`);
 						}
-
-						e.emit(`${name}.success`, v);
-						e.removeAllListeners(`${name}.error`);
-
-					} catch (err) {
-						onError(err);
 					}
-				});
 
-			} catch (err) {
-				onError(err);
-			}
-		});
+					e.emit(`${name}.error`, err);
+					e.removeAllListeners(`${name}.success`);
 
+					throw err;
+				}
+
+				try {
+					main = require(src).main;
+
+					if (!main) {
+						return;
+					}
+
+					link = main.link;
+					o.wait(async () => {
+						try {
+							success.set(name, await main.call(e, ...args));
+
+							const
+								v = success.get(name);
+
+							if (link) {
+								success.set(link, v);
+
+								if (Object.isString(link) || link.eventName) {
+									e.emit(`${link.eventName || link}.success`, v);
+									e.removeAllListeners(`${link.eventName || link}.error`);
+								}
+							}
+
+							e.emit(`${name}.success`, v);
+							e.removeAllListeners(`${name}.error`);
+
+						} catch (err) {
+							onError(err);
+						}
+					});
+
+				} catch (err) {
+					onError(err);
+				}
+			})
+		}
+
+		await loadDir(fs.readdirSync(dir));
 		module[initialized] = true;
 	};
 }
