@@ -10,6 +10,7 @@
 
 const
 	path = require('path'),
+	config = require('config'),
 	manifestRequest = /(\/assets\/favicons\/manifest\.json)$/;
 
 /**
@@ -21,7 +22,7 @@ module.exports = async function (ctx, next) {
 
 	if (manifest) {
 		const
-			key = path.join('../../../', manifest[1]);
+			key = path.join(config.src.assets(), manifest[1]);
 
 		if (isProd) {
 			ctx.set('Cache-Control', `no-store, no-cache, must-revalidate`);

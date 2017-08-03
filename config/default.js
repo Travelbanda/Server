@@ -19,10 +19,7 @@ const
 
 const config = module.exports = $C.extend(defConfig.extend, Object.create(defConfig), {
 	src: {
-		server: [path.join(__dirname, '../src'), defConfig.src.core],
-		serverOutput() {
-			return path.join(this.output(), 'server');
-		}
+		server: [path.join(__dirname, '../src')].concat(defConfig.src.server)
 	},
 
 	db: {
@@ -53,7 +50,7 @@ config.babel = {
 		{
 			resolveModuleSource(source, from) {
 				const
-					src = config.babel.server.resolveModuleSource.src || config.src;
+					src = $C(config).get('babel.server.resolveModuleSource.src') || config.src;
 
 				if (!path.isAbsolute(source) && /^[^./\\]/.test(source)) {
 					const paths = [].concat(

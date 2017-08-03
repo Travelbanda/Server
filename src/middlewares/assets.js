@@ -10,13 +10,12 @@
 
 const
 	$C = require('collection.js'),
-	findUp = require('find-up'),
+	config = require('config'),
 	path = require('path');
 
 const
 	assetsRequest = /\/((\d+_)?assets\.js)$/,
 	keyRgxp = /\.(js|css)$/,
-	packages = findUp.sync('packages'),
 	cache = {};
 
 /**
@@ -29,7 +28,7 @@ module.exports = async function (ctx, next) {
 	if (assets) {
 		const
 			// .js -> .json
-			key = path.join(packages, `${assets[1]}on`);
+			key = path.join(config.src.clientOutput(), `${assets[1]}on`);
 
 		let body = cache[key];
 		if (!body) {
