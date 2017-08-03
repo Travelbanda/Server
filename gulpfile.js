@@ -23,7 +23,7 @@ module.exports = function (gulp = require('gulp')) {
 
 	gulp.task('cleanServer', (cb) => {
 		const del = require('del');
-		del('./dist/server').then(() => cb(), cb);
+		del(src.serverOutput()).then(() => cb(), cb);
 	});
 
 	gulp.task('server', (cb) => {
