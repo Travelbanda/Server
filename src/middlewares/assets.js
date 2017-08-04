@@ -16,7 +16,7 @@ const
 const
 	assetsRequest = /\/((\d+_)?assets\.js)$/,
 	keyRgxp = /\.(js|css)$/,
-	cache = {};
+	cache = Object.create(null);
 
 /**
  * Assets JSONp
@@ -32,7 +32,7 @@ module.exports = async function (ctx, next) {
 
 		let body = cache[key];
 		if (!body) {
-			body = cache[key] = $C(require(key)).reduce((str, el, key) => {
+			body = cache[key] = $C(require(key)).reduce((str, el: {js: any, css: any}, key) => {
 				delete el[''];
 
 				if (el.js || el.css) {
@@ -44,7 +44,6 @@ module.exports = async function (ctx, next) {
 		}
 
 		if (isProd) {
-			// ctx.set('Cache-Control', `public, max-age=${(1).year() / 1e3}`);
 			ctx.set('Cache-Control', `no-store, no-cache, must-revalidate`);
 			ctx.set('Pragma', `no-cache`);
 

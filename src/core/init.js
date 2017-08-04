@@ -106,7 +106,7 @@ export default function factory(module: Object): Function {
 
 				let
 					main,
-					link;
+					link: string | {eventName?: string};
 
 				function onError(err) {
 					fail.set(name, err);
@@ -161,7 +161,7 @@ export default function factory(module: Object): Function {
 				} catch (err) {
 					onError(err);
 				}
-			})
+			});
 		}
 
 		await loadDir(fs.readdirSync(dir));

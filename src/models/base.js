@@ -455,7 +455,7 @@ export default class Base extends ModelConstructor {
 	 */
 	static async joi(
 		value: any,
-		schemaName: string | Symbols,
+		schemaName: string | Symbol,
 		parentSchema?: ?string | Symbol | Array<string | Symbol> | Object | Function,
 		initializer?: Function,
 		params?: Object
@@ -973,6 +973,7 @@ export default class Base extends ModelConstructor {
 							arr = [];
 
 						for (let i = 0; i < field.length; i++) {
+							const el = field[i];
 							arr.push(g(lang[el] && lang[el].name));
 						}
 

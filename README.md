@@ -1,1 +1,2 @@
-# ServerCore
+V4Fire Server Core
+==================

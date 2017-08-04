@@ -221,7 +221,7 @@ boom.joi = async function (data: any, schema: joi, params?: Object): any {
  */
 extJoi.get = function (
 	name: string | Symbol,
-	parent?: ?string | Symbol | Array<string | Symbol> | Object | Function,
+	parent?: ?string | Symbol | Array<string | Symbol> | {$schema?: Object, $pre?: Object, $post?: Object} | Function,
 	schema?: Function
 ): ?joi {
 	if (cache[name]) {

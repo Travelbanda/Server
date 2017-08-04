@@ -13,14 +13,13 @@ import Type from 'models/core/type';
 import Store from 'core/store';
 import joi from 'core/validation';
 import { model, mixin, type, index } from 'models/core/model';
-import { permission, role } from 'init/enums';
+import { permission } from 'init/enums';
 import { notifyServer } from 'sockets/core/notify';
 import { test } from 'core/acl';
 import * as _ from 'models/core/types';
 
 const
 	$C = require('collection.js'),
-	mongoose = require('mongoose'),
 	config = require('config'),
 	promisify = require('promisify-any'),
 	request = require('request-promise-native'),

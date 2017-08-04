@@ -50,12 +50,7 @@ export default class Base {
 		if (!opts.abstract) {
 			let Model;
 			if (opts.model !== false) {
-				if (Object.isString(opts.model)) {
-					Model = mongoose.model(opts.model);
-
-				} else {
-					Model = mongoose.model(name);
-				}
+				Model = mongoose.model(Object.isString(opts.model) ? opts.model : name);
 			}
 
 			$C(methods).filter(filter(mBlacklist)).forEach((key) => {

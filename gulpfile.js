@@ -23,7 +23,7 @@ module.exports = function (gulp = require('gulp')) {
 
 	gulp.task('cleanServer', (cb) => {
 		const del = require('del');
-		del(src.serverOutput()).then(() => cb(), cb);
+		del(dest.serverOutput()).then(() => cb(), cb);
 	});
 
 	gulp.task('server', (cb) => {
@@ -66,7 +66,7 @@ module.exports = function (gulp = require('gulp')) {
 		};
 
 		const tasks = $C(paths.slice(1)).reduce(
-			(tasks, el, i) => tasks.concat(buildTask(el, {base: 'node_modules'})),
+			(tasks, el) => tasks.concat(buildTask(el, {base: 'node_modules'})),
 			buildTask(paths[0], {base: path.relative(dest.cwd, dest.server[0]).split(path.sep)[0]})
 		);
 

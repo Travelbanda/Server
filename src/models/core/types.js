@@ -22,7 +22,7 @@ export const
  * Converts the specified joi type to an array type
  * @param value
  */
-export function toArray(value: joi): [joi, joi] {
+export function toArray(value: joi & {toArray: Function}): [joi, joi] {
 	return [value.toArray(), joi.array().items(value)];
 }
 

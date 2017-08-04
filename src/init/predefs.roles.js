@@ -53,7 +53,7 @@ export default async function (
 					unsafe: true,
 					model: true
 				}
-			)
+			);
 		}
 	};
 };

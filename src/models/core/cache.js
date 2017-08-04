@@ -12,8 +12,8 @@ const
 	$C = require('collection.js');
 
 export const
-	dataCache = {},
-	timeCache = {};
+	dataCache = Object.create(null),
+	timeCache = Object.create(null);
 
 // Cache invalidation
 $C(infinity).async.forEach(async (el, i, data, o) => {

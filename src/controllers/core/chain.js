@@ -100,7 +100,7 @@ export default class Chain {
 	 * @param [converter] - data converter
 	 */
 	addGuard(
-		ctx: {query?: Object, project?: Object, user?: Object},
+		ctx: {query?: Object, project?: Object, user?: Object, reqData?: Object},
 		fields: Object | Array | string,
 		converter?: Function = String
 
@@ -182,7 +182,8 @@ export default class Chain {
 
 		const arr = [(ctx, next) => {
 			const
-				{query, reqData, request: {body}} = ctx;
+				{query, reqData, request: {body}} = ctx,
+				dangerProps = /^\$/;
 
 			if (Object.isArray(body)) {
 				ctx.reqData = Object.assign(body.slice(), reqData);
@@ -192,7 +193,7 @@ export default class Chain {
 					...query,
 					...body,
 					...reqData
-				}, /^\$/);
+				}, dangerProps);
 			}
 
 			/**
@@ -201,7 +202,10 @@ export default class Chain {
 			 */
 			ctx.forkCtx = (...args: any): Object => ({
 				user: ctx.user,
-				reqData: Object.assign(Object.reject(ctx.reqData, /^\$/), ...args)
+				reqData: Object.assign(
+					Object.isArray(ctx.reqData) ? ctx.reqData : Object.reject(ctx.reqData, dangerProps),
+					...args
+				)
 			});
 
 			return next();
