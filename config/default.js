@@ -34,7 +34,7 @@ const config = module.exports = $C.extend(defConfig.extend, Object.create(defCon
 });
 
 const
-	exists = {};
+	exists = Object.create(null);
 
 config.babel = {
 	server: $C.extend(
