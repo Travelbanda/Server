@@ -12,7 +12,7 @@ const
 	$C = require('collection.js');
 
 const
-	cache = {};
+	cache = Object.create(null);
 
 /**
  * Returns a role object by the specified name

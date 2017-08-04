@@ -21,7 +21,7 @@ const
  * @param module - module object
  * @param [opts] - additional options
  */
-export function controller(module, opts?: Object = {}) {
+export function controller(module, opts?: Object) {
 	return (target) => {
 		module.exports.main = async function (controller) {
 			await new target(controller, opts, {

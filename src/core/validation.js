@@ -161,7 +161,7 @@ const
 	schemaName = Symbol();
 
 export const
-	cache = {};
+	cache = Object.create(null);
 
 /**
  * Validates data by the specified Joi schema

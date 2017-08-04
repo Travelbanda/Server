@@ -183,7 +183,7 @@ export default class Base extends ModelConstructor {
 			cache = dataCache[model];
 
 		if (!cache) {
-			cache = {};
+			cache = Object.create(null);
 			dataCache[model] = cache;
 		}
 
