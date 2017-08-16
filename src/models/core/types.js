@@ -189,9 +189,6 @@ joi.get('password', 'string', (s) => s
 joi.get('name', 'string', (s) => s.trim().min(rules.name.min).max(rules.name.max));
 joi.get('names', 'name', toArray);
 
-joi.get('fullName', 'string', (s) => s.trim().min(rules.name.min).max(rules.name.max * 2));
-joi.get('fullNames', 'fullName', toArray);
-
 /**
  * Name type
  */
@@ -215,6 +212,30 @@ export const optionalName = new Type({
 
 joi.get('specialName', 'name', (s) => s.regex(rules.name.pattern));
 joi.get('specialNames', 'specialName', toArray);
+
+joi.get('fullName', 'string', (s) => s.trim().min(rules.name.min).max(rules.name.max * 2));
+joi.get('fullNames', 'fullName', toArray);
+
+/**
+ * Full name type
+ */
+export const fullName = new Type({
+	type: String,
+	trim: true,
+	joi: 'fullName'
+});
+
+joi.get('optionalFullName', 'string', (s) => s.trim().allow('').max(rules.name.max * 2));
+joi.get('optionalFullNames', 'optionalFullName', toArray);
+
+/**
+ * Empty full name type
+ */
+export const optionalFullName = new Type({
+	type: String,
+	trim: true,
+	joi: 'optionalFullName'
+});
 
 /**
  * Special user name type
