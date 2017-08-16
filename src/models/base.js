@@ -982,6 +982,8 @@ export default class Base extends ModelConstructor {
 
 					return g(lang[field] && lang[field].name);
 			}
+
+			return field;
 		}
 
 		for (let i = 0; i < constant.length; i++) {
