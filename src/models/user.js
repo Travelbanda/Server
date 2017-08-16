@@ -174,15 +174,6 @@ export default class User extends Base {
 			$$
 		);
 
-		schema.index({
-			'phones.value': 'text',
-			'emails.value': 'text',
-			'name': 'text',
-			'fName': 'text',
-			'mName': 'text',
-			'lName': 'text'
-		});
-
 		joi.get($$.query, $$base.query, (s, p) => ({
 			$schema: {
 				...params.fields,
