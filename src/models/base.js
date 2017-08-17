@@ -342,6 +342,32 @@ export default class Base extends ModelConstructor {
 			obj = await Object.getPrototypeOf(this).create.call(this, opts.unsafe ? data : await this.preSave(data));
 
 		if (opts.model) {
+			if (Object.isArray(obj)) {
+				obj.toObject = () => {
+					const
+						res = obj.slice();
+
+					for (let i = 0; i < res.length; i++) {
+						res[i] = obj[i].toObject();
+					}
+
+					return res;
+				};
+
+				obj.toJSON = () => {
+					const
+						res = obj.slice();
+
+					for (let i = 0; i < res.length; i++) {
+						res[i] = obj[i].toJSON();
+					}
+
+					return res;
+				};
+
+				obj.toFullObject = () => $C(obj).async.map((el) => el.toFullObject());
+			}
+
 			return obj;
 		}
 
@@ -425,9 +451,20 @@ export default class Base extends ModelConstructor {
 	 * Pre save handler
 	 * @param data
 	 */
-	static preSave(data: Object | Array): Object | Array {
+	static async preSave(data: Object | Array): Object | Array {
 		if (Object.isArray(data)) {
-			$C(data).set((el) => this.preSave(el));
+			data = data.slice();
+
+			const
+				tasks = [];
+
+			for (let i = 0; i < data.length; i++) {
+				tasks.push((async () => {
+					data[i] = await this.preSave(data[i]);
+				})());
+			}
+
+			await Promise.all(tasks);
 			return data;
 		}
 
