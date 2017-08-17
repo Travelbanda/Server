@@ -506,6 +506,46 @@ export default class Base extends ModelConstructor {
 	}
 
 	/**
+	 * Validates a value or an array of values by the specified Joi schema and returns new
+	 * (base object won't modified)
+	 *
+	 * @param value
+	 * @param schemaName
+	 * @param [parentSchema] - parent schema name (or an array of names) or a schema object/initializer
+	 * @param [initializer] - schema initializer
+	 * @param [params] - validation parameters
+	 */
+	static async joiArray(
+		value: any,
+		schemaName: string | Symbols,
+		parentSchema?: ?string | Symbol | Array<string | Symbol> | Object | Function,
+		initializer?: Function,
+		params?: Object
+	): ?Object {
+		if (Object.isArray(value)) {
+			value = value.slice();
+
+			const
+				tasks = [];
+
+			for (let i = 0; i < value.length; i++) {
+				tasks.push((async () => {
+					value[i] = await this.joi(value[i], schemaName, parentSchema, initializer, params);
+				})());
+			}
+
+			await Promise.all(tasks);
+			return value;
+		}
+
+		if (Object.isObject(value)) {
+			value = {...value};
+		}
+
+		return this.joi(value, schemaName, parentSchema, initializer, params);
+	}
+
+	/**
 	 * Reduces request parameters to the valid form
 	 *
 	 * @param params - request parameters
