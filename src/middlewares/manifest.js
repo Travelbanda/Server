@@ -10,7 +10,7 @@
 
 const
 	path = require('path'),
-	manifestRequest = /(\/assets\/favicons\/manifest\.json)$/;
+	manifestRequest = /(\/favicons\/manifest\.json)$/;
 
 /**
  * Manifest.json
