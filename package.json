@@ -24,7 +24,7 @@
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
-    "@v4fire/core": "^1.0.31",
+    "@v4fire/core": "github:dmitrybrovka/Core",
     "boom": "^5.1.0",
     "collection.js": "^6.0.0-beta.19",
     "config": "^1.26.2",
